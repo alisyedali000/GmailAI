@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignInView: View {
-    @EnvironmentObject var gmail: GmailService
+    @EnvironmentObject var gmail: GmailViewModel
 
     var body: some View {
         VStack(spacing: 24) {
@@ -22,5 +22,9 @@ struct SignInView: View {
             }
         }
     }
+}
+
+#Preview {
+    SignInView()
 }
 

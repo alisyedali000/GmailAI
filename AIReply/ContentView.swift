@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var gmail: GmailService
+    @EnvironmentObject var gmail: GmailViewModel
 
     var body: some View {
         NavigationStack {
@@ -20,6 +20,9 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("AIReply")
+            .task {
+                await gmail.restorePreviousSignIn()
+            }
         }
     }
 }

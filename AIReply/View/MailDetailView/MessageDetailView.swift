@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MessageDetailView: View {
-    @EnvironmentObject var gmail: GmailService
+    @EnvironmentObject var gmail: GmailViewModel
     let message: GmailMessage
 
     @State private var threadMessages: [GmailMessage] = []
@@ -127,7 +127,7 @@ struct MessageDetailView: View {
         sendSuccess = false
         await gmail.sendReply(to: message, body: replyText)
         isSending = false
-        if gmail.errorMessage == nil {
+        if !gmail.showError {
             sendSuccess = true
             replyText = ""
             await loadThread()

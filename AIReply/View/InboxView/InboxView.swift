@@ -1,7 +1,15 @@
+//
+//  InboxView.swift
+//  AIReply
+//
+//  Created by Syed Ahmad  on 06/02/2026.
+//
+
+
 import SwiftUI
 
 struct InboxView: View {
-    @EnvironmentObject var gmail: GmailService
+    @EnvironmentObject var gmail: GmailViewModel
 
     var body: some View {
         List {
@@ -15,7 +23,7 @@ struct InboxView: View {
             }
         }
         .overlay {
-            if gmail.isLoading {
+            if gmail.showLoader {
                 ProgressView("Loading inbox…")
             }
         }
@@ -38,12 +46,12 @@ struct InboxView: View {
         }
         .listStyle(.plain)
         .alert(isPresented: Binding(
-            get: { gmail.errorMessage != nil },
-            set: { _ in gmail.errorMessage = nil }
+            get: { gmail.showError },
+            set: { _ in gmail.showError = false; gmail.errorMessage = "" }
         )) {
             Alert(
                 title: Text("Error"),
-                message: Text(gmail.errorMessage ?? ""),
+                message: Text(gmail.errorMessage),
                 dismissButton: .default(Text("OK"))
             )
         }
@@ -64,5 +72,9 @@ struct InboxView: View {
         }
         .padding(.vertical, 4)
     }
+}
+
+#Preview{
+    InboxView()
 }
 

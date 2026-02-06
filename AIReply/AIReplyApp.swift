@@ -10,14 +10,14 @@ import GoogleSignIn
 
 @main
 struct AIReplyApp: App {
-    @StateObject private var gmailService = GmailService()
+    @StateObject private var gmailService = GmailViewModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(gmailService)
                 .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
+                    _ = GIDSignIn.sharedInstance.handle(url)
                 }
         }
     }

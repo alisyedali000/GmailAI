@@ -1,3 +1,11 @@
+//
+//  GmailListResponse.swift
+//  AIReply
+//
+//  Created by Syed Ahmad  on 06/02/2026.
+//
+
+
 import Foundation
 
 struct GmailListResponse: Codable {
