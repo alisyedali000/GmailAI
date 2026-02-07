@@ -7,17 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5A014F53-0833-4AA8-BB27-0DF38F8AE4AD"
+            uuid = "81CFAA9A-32DA-4D8A-9218-D1F71CC02737"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AIReply/View/InboxView/InboxView.swift"
+            filePath = "AIReply/OpenAI/OpenAIViewModel/OpenAIViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "12"
-            endingLineNumber = "12"
-            landmarkName = "InboxView"
-            landmarkType = "14">
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "generateEmails(completion:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

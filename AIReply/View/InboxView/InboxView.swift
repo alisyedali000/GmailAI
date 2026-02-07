@@ -2,11 +2,11 @@
 //  InboxView.swift
 //  AIReply
 //
-//  Created by Syed Ahmad  on 06/02/2026.
+//  Created by Syed Ahmad on 06/02/2026.
 //
 
-
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct InboxView: View {
     @EnvironmentObject var gmail: GmailViewModel
@@ -58,23 +58,40 @@ struct InboxView: View {
     }
 
     private func inboxRow(_ message: GmailMessage) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(message.subject)
-                .font(message.isUnread ? .headline : .body)
-                .fontWeight(message.isUnread ? .semibold : .regular)
-            Text(message.from)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            Text(message.snippet)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(2)
+        HStack(alignment: .top, spacing: 12) {
+            WebImage(url: message.gravatarURL)
+                .resizable()
+//                .placeholder {
+//                    Circle()
+//                        .fill(Color.secondary.opacity(0.3))
+//                        .overlay {
+//                            Text(String(message.from.prefix(1)).uppercased())
+//                                .font(.headline)
+//                                .foregroundColor(.secondary)
+//                        }
+//                }
+//                .indicator(.activity)
+                .frame(width: 44, height: 44)
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(message.subject)
+                    .font(message.isUnread ? .headline : .body)
+                    .fontWeight(message.isUnread ? .semibold : .regular)
+                Text(message.from)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Text(message.snippet)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+            }
+            .padding(.vertical, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, 4)
     }
 }
 
-#Preview{
+#Preview {
     InboxView()
 }
-

@@ -1,12 +1,12 @@
 //
-//  GmailListResponse.swift
+//  GmailModels.swift
 //  AIReply
 //
-//  Created by Syed Ahmad  on 06/02/2026.
+//  Created by Syed Ahmad on 06/02/2026.
 //
 
-
 import Foundation
+import CryptoKit
 
 struct GmailListResponse: Codable {
     struct Item: Codable {
@@ -94,6 +94,16 @@ struct GmailMessage: Identifiable {
     /// True when the message has the UNREAD label (Gmail-style highlight in inbox).
     let isUnread: Bool
 
+    /// Gravatar URL for sender's profile picture (falls back to identicon when none).
+    var gravatarURL: URL? {
+        let email = fromEmail.lowercased().trimmingCharacters(in: .whitespaces)
+        guard !email.isEmpty,
+              let data = email.data(using: .utf8) else { return nil }
+        let hash = Insecure.MD5.hash(data: data)
+        let hex = hash.map { String(format: "%02x", $0) }.joined()
+        return URL(string: "https://www.gravatar.com/avatar/\(hex)?d=identicon&s=80")
+    }
+
     init?(from api: GmailAPIMessage) {
         id = api.id
         threadId = api.threadId
@@ -130,5 +140,17 @@ struct GmailMessage: Identifiable {
             fromEmail = from
         }
     }
-}
+    
+    init(){
+        self.id = ""
+        self.threadId = ""
+        self.subject = ""
+        self.from = ""
+        self.fromEmail = ""
+        self.snippet = ""
+        self.messageIdHeader = ""
+        self.internalDate = Date()        /// True when the message has the UNREAD label (Gmail-style highlight in inbox).
+        self.isUnread = false        /// Gravatar URL for sender's profile picture (falls back to identicon when none).
 
+    }
+}

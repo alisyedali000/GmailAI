@@ -1,8 +1,16 @@
+//
+//  MessageDetailView.swift
+//  AIReply
+//
+//  Created by Syed Ahmad  on 07/02/2026.
+//
+
 import SwiftUI
 
 struct MessageDetailView: View {
     @EnvironmentObject var gmail: GmailViewModel
     let message: GmailMessage
+    @StateObject var vm = OpenAIViewModel()
 
     @State private var threadMessages: [GmailMessage] = []
     @State private var isLoadingThread = true
@@ -82,6 +90,12 @@ struct MessageDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await loadThread()
+            vm.email = self.message.snippet
+            await vm.generateEmails {
+                
+                self.replyText = vm.generatedEmails.emails.first?.content ?? ""
+                
+            }
         }
     }
 
@@ -133,4 +147,7 @@ struct MessageDetailView: View {
             await loadThread()
         }
     }
+}
+#Preview{
+    MessageDetailView(message: GmailMessage())
 }
