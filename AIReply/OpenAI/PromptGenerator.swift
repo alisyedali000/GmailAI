@@ -42,6 +42,8 @@ class PromptGenerator {
         EMAIL CONTENT:
         {{\(emailContent))}}
         
+        The email content is provided above you need to write a reply for that.
+        
         The output must be a structured JSON format as following:
         
         '''json
