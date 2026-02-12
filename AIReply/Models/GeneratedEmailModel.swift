@@ -27,3 +27,8 @@ struct Email: Codable {
     }
     
 }
+
+struct Summary: Codable {
+    let content: String
+}
+

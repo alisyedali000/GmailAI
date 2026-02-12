@@ -75,9 +75,16 @@ struct InboxView: View {
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(message.subject)
-                    .font(message.isUnread ? .headline : .body)
-                    .fontWeight(message.isUnread ? .semibold : .regular)
+                HStack(alignment: .top) {
+                    Text(message.subject)
+                        .font(message.isUnread ? .headline : .body)
+                        .fontWeight(message.isUnread ? .semibold : .regular)
+                        .lineLimit(1)
+                    Spacer(minLength: 8)
+                    Text(message.inboxReceivedDateString)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
                 Text(message.from)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
