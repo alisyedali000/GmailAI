@@ -8,7 +8,7 @@
 
 import Foundation
 
-let openAI = "OPENAI_API_KEY"
+let API_Key = "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"
 
 enum OpenAIEndpoints {
     
@@ -55,14 +55,14 @@ extension OpenAIEndpoints : Endpoint {
         case .generateContext:
             
             return  [
-                "Authorization": "Bearer \(openAI)",
+                "Authorization": "Bearer \(API_Key)",
                 "Content-Type": "application/json"
             ]
             
         case .generateReplies:
             
             return  [
-                "Authorization": "Bearer \(openAI)",
+                "Authorization": "Bearer \(API_Key)",
                 "Content-Type": "application/json"
             ]
 

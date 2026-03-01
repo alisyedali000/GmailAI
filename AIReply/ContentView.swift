@@ -16,10 +16,9 @@ struct ContentView: View {
                 if gmail.isSignedIn {
                     InboxView()
                 } else {
-                    SignInView()
+                    OnboardingViewer()
                 }
             }
-            .navigationTitle("AIReply")
             .task {
                 await gmail.restorePreviousSignIn()
             }

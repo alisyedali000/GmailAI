@@ -59,20 +59,25 @@ struct InboxView: View {
 
     private func inboxRow(_ message: GmailMessage) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            WebImage(url: message.gravatarURL)
-                .resizable()
-//                .placeholder {
-//                    Circle()
-//                        .fill(Color.secondary.opacity(0.3))
-//                        .overlay {
-//                            Text(String(message.from.prefix(1)).uppercased())
-//                                .font(.headline)
-//                                .foregroundColor(.secondary)
-//                        }
-//                }
-//                .indicator(.activity)
-                .frame(width: 44, height: 44)
-                .clipShape(Circle())
+            WebImage(url: message.gravatarURL) { image in
+                    image
+                        .resizable()
+//                        .indicator(.activity)
+                        .frame(width: 44, height: 44)
+                        .clipShape(Circle())
+                
+            } placeholder : {
+                Circle()
+                    .fill(Color.secondary.opacity(0.3))
+                    .frame(width: 44, height: 44)
+                    .overlay {
+                        Text(String(message.from.prefix(1)).uppercased())
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                    }
+            }
+            .indicator(.activity)
+
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .top) {

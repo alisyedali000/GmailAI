@@ -14,11 +14,13 @@ struct AIReplyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(gmailService)
-                .onOpenURL { url in
-                    _ = GIDSignIn.sharedInstance.handle(url)
-                }
+//            NavigationStack {
+                ContentView()
+                    .environmentObject(gmailService)
+                    .onOpenURL { url in
+                        _ = GIDSignIn.sharedInstance.handle(url)
+                    }
+//            }
         }
     }
 }
