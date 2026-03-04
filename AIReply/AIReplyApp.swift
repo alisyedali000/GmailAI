@@ -10,17 +10,29 @@ import GoogleSignIn
 
 @main
 struct AIReplyApp: App {
-    @StateObject private var gmailService = GmailViewModel()
-
+    @AppStorage("showOnboarding") var onboardingShown = false
     var body: some Scene {
         WindowGroup {
-//            NavigationStack {
-                ContentView()
-                    .environmentObject(gmailService)
-                    .onOpenURL { url in
-                        _ = GIDSignIn.sharedInstance.handle(url)
+            NavigationStack{
+                Group{
+                    if !onboardingShown{
+                        OnboardingViewer()
+                    } else {
+                        ContentView()
+                            .onOpenURL { url in
+                                _ = GIDSignIn.sharedInstance.handle(url)
+                            }
                     }
-//            }
+                }
+                
+            }
         }
     }
+}
+
+enum AppState{
+    case checkingSession
+    case signedIn
+    case signedOut
+    case splash
 }

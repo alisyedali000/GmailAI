@@ -8,21 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var gmail: GmailViewModel
+    @StateObject var gmail = GmailViewModel()
+//    @State var status : AppState = .
+    @State private var checkingSession = true
 
     var body: some View {
-        NavigationStack {
+//        NavigationStack {x
             Group {
-                if gmail.isSignedIn {
-                    InboxView()
+                if checkingSession{
+                    ProgressView()
+                } else if gmail.isSignedIn {
+                    InboxView(gmail: gmail)
                 } else {
-                    OnboardingViewer()
+                    SignInView(gmail: gmail)
                 }
             }
             .task {
                 await gmail.restorePreviousSignIn()
+                self.checkingSession = false
             }
-        }
+        
     }
 }
-

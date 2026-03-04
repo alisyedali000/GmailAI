@@ -8,7 +8,7 @@
 
 import Foundation
 
-let API_Key = "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"
+let API_Key = ""
 
 enum OpenAIEndpoints {
     

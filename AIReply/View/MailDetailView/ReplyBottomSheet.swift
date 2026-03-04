@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct ReplyBottomSheet: View {
-    @EnvironmentObject var gmail: GmailViewModel
+    @ObservedObject var gmail: GmailViewModel
     @Environment(\.dismiss) private var dismiss
 
     let message: GmailMessage

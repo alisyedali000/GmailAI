@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MessageDetailView: View {
-    @EnvironmentObject var gmail: GmailViewModel
+    @ObservedObject var gmail: GmailViewModel
     let message: GmailMessage
     @StateObject var vm = OpenAIViewModel()
 
@@ -72,8 +72,7 @@ struct MessageDetailView: View {
             .background(Color(.systemBackground))
         }
         .sheet(isPresented: $showReplySheet) {
-            ReplyBottomSheet(message: message, vm: vm)
-                .environmentObject(gmail)
+            ReplyBottomSheet(gmail: gmail, message: message, vm: vm)
         }
         .navigationTitle(message.subject)
         .navigationBarTitleDisplayMode(.inline)
@@ -131,5 +130,5 @@ struct MessageDetailView: View {
     }
 }
 #Preview{
-    MessageDetailView(message: GmailMessage())
+    MessageDetailView(gmail: GmailViewModel(), message: GmailMessage())
 }

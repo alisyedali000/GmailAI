@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct OnboardingViewer: View {
+    @AppStorage("showOnboarding") var onboardingShown = false
     @State var view : Int = 0
     @State var moveToMain = false
     @Environment(\.colorScheme) var colorScheme
@@ -16,12 +17,7 @@ struct OnboardingViewer: View {
     var body: some View {
        screenView
             .padding(.horizontal)
-            .navigationDestination(isPresented: $moveToMain) {
-                
-                SignInView()
-                    .navigationBarBackButtonHidden()
-                
-            }
+
     }
 }
 extension OnboardingViewer{
@@ -89,9 +85,9 @@ extension OnboardingViewer{
                
                 } else {
                     self.moveToMain = true
-
-//                   se UserDefaultManager.Authenticated.send(true)
-                    
+//                    self.gmail.
+//                   UserDefaultManager.Authenticated.send(true)
+                    self.onboardingShown = true
                 }
             })
 
@@ -120,4 +116,3 @@ extension OnboardingViewer{
 #Preview {
     OnboardingViewer()
 }
-

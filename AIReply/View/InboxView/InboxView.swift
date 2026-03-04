@@ -9,13 +9,13 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct InboxView: View {
-    @EnvironmentObject var gmail: GmailViewModel
+    @ObservedObject var gmail: GmailViewModel
 
     var body: some View {
         List {
             ForEach(gmail.messages) { message in
                 NavigationLink {
-                    MessageDetailView(message: message)
+                    MessageDetailView(gmail: gmail, message: message)
                 } label: {
                     inboxRow(message)
                 }
@@ -105,5 +105,5 @@ struct InboxView: View {
 }
 
 #Preview {
-    InboxView()
+    InboxView(gmail: GmailViewModel())
 }
