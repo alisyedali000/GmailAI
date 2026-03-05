@@ -18,6 +18,8 @@ struct MessageDetailView: View {
     @State private var summaryText = ""
     @State private var showSummary = true
     @State private var showReplySheet = false
+    @State private var showGeneratedReplySheet = false
+    @State private var generatedReplyText = ""
     @State private var htmlHeights: [String: CGFloat] = [:]
     
     private var dateFormatter: DateFormatter {
@@ -31,7 +33,18 @@ struct MessageDetailView: View {
         screenView
             .padding(.horizontal)
         .sheet(isPresented: $showReplySheet) {
-            ReplyBottomSheet(gmail: gmail, message: message, vm: vm)
+            NavigationStack {
+                ReplyBottomSheet(gmail: gmail, message: message, vm: vm) { replyText in
+                    generatedReplyText = replyText
+                    showReplySheet = false
+                    showGeneratedReplySheet = true
+                }
+            }
+        }
+        .sheet(isPresented: $showGeneratedReplySheet) {
+            NavigationStack {
+                GeneratedReplySheet(gmail: gmail, message: message, replyContent: generatedReplyText)
+            }
         }
         .toolbarRole(.editor)
         .task {
@@ -112,10 +125,10 @@ extension MessageDetailView{
                     
                     
                     Text(msg.from)
-                        .font(.semiBold(size: 15.5))
+                        .font(.semiBold(size: 13.5))
                     
                     Text(msg.fromEmail)
-                        .font(.regular(size: 13.5))
+                        .font(.regular(size: 12.5))
                     
                     if let date = msg.internalDate {
                         Text(dateFormatter.string(from: date))
