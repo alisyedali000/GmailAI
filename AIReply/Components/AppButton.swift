@@ -36,7 +36,7 @@ extension AppButton{
                     }
                 
             }
-            .padding(.bottom)
+            .padding(.vertical)
         
     }
     

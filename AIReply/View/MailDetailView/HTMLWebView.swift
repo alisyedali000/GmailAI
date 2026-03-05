@@ -6,9 +6,41 @@
 import SwiftUI
 import WebKit
 
-/// Renders HTML content in a WKWebView, Gmail-style (responsive, readable).
+/// Renders HTML content in a WKWebView, Gmail-style (responsive, readable), with dynamic height.
 struct HTMLWebView: UIViewRepresentable {
     let html: String
+    @Binding var height: CGFloat
+
+    final class Coordinator: NSObject, WKNavigationDelegate {
+        var parent: HTMLWebView
+
+        init(parent: HTMLWebView) {
+            self.parent = parent
+        }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            webView.evaluateJavaScript("document.body.scrollHeight") { [weak self] result, _ in
+                guard let self = self else { return }
+                var newHeight: CGFloat?
+
+                if let h = result as? CGFloat {
+                    newHeight = h
+                } else if let number = result as? NSNumber {
+                    newHeight = CGFloat(truncating: number)
+                }
+
+                if let h = newHeight, h > 0 {
+                    DispatchQueue.main.async {
+                        self.parent.height = h
+                    }
+                }
+            }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
 
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
@@ -19,6 +51,8 @@ struct HTMLWebView: UIViewRepresentable {
         webView.scrollView.backgroundColor = .clear
         webView.scrollView.bounces = false
         webView.scrollView.showsVerticalScrollIndicator = false
+        webView.scrollView.isScrollEnabled = false
+        webView.navigationDelegate = context.coordinator
         return webView
     }
 

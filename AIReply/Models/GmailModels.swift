@@ -96,7 +96,7 @@ struct GmailAPIMessage: Codable {
     }
 }
 
-struct GmailMessage: Identifiable {
+struct GmailMessage: Identifiable, Equatable {
     let id: String
     let threadId: String
     let subject: String
@@ -111,6 +111,33 @@ struct GmailMessage: Identifiable {
     let bodyHtml: String?
     /// Full plain-text body when available.
     let bodyPlain: String?
+
+    /// Convenience initializer used for mocks and manual construction.
+    init(
+        id: String,
+        threadId: String,
+        subject: String,
+        from: String,
+        fromEmail: String,
+        snippet: String,
+        messageIdHeader: String,
+        internalDate: Date?,
+        isUnread: Bool,
+        bodyHtml: String?,
+        bodyPlain: String?
+    ) {
+        self.id = id
+        self.threadId = threadId
+        self.subject = subject
+        self.from = from
+        self.fromEmail = fromEmail
+        self.snippet = snippet
+        self.messageIdHeader = messageIdHeader
+        self.internalDate = internalDate
+        self.isUnread = isUnread
+        self.bodyHtml = bodyHtml
+        self.bodyPlain = bodyPlain
+    }
 
     /// Inbox-style received date: today → time; this week → day; else month+date; >1yr → MM/dd/yyyy.
     var inboxReceivedDateString: String {
@@ -242,5 +269,135 @@ struct GmailMessage: Identifiable {
         self.isUnread = false
         self.bodyHtml = nil
         self.bodyPlain = nil
+    }
+}
+
+// MARK: - Mock Data for Previews
+
+extension GmailMessage {
+    /// A single mock message for use in previews.
+    static var mock: GmailMessage {
+        GmailMessage(
+            id: "mock-id-1",
+            threadId: "thread-1",
+            subject: "Welcome to AIReply 👋",
+            from: "Ali from AIReply <ali@example.com>",
+            fromEmail: "ali@example.com",
+            snippet: "This is a short preview of how your inbox items will look inside the app.",
+            messageIdHeader: "<mock-message-1@aireply.local>",
+            internalDate: Date().addingTimeInterval(-3600),
+            isUnread: true,
+            bodyHtml: """
+            <html>
+              <body>
+                <p>Hey there,</p>
+                <p>This is an example HTML body used only for SwiftUI previews.</p>
+                <p>It lets you see how rich emails will be rendered in the detail screen.</p>
+                <p>Best,<br/>AIReply Team</p>
+              </body>
+            </html>
+            """,
+            bodyPlain: """
+            Hey there,
+
+            This is an example plain-text body used only for SwiftUI previews.
+
+            Best,
+            AIReply Team
+            """
+        )
+    }
+
+    /// A collection of mock inbox messages to drive the inbox preview.
+    static var mockInbox: [GmailMessage] {
+        [
+            GmailMessage(
+                id: "mock-id-1",
+                threadId: "thread-1",
+                subject: "Welcome to AIReply 👋",
+                from: "Ali from AIReply <ali@example.com>",
+                fromEmail: "ali@example.com",
+                snippet: "Thanks for trying the AIReply Gmail assistant. Here’s a quick overview of what you can do…",
+                messageIdHeader: "<mock-message-1@aireply.local>",
+                internalDate: Date().addingTimeInterval(-3600),
+                isUnread: true,
+                bodyHtml: nil,
+                bodyPlain: "Full welcome email body for previewing the detail screen."
+            ),
+            GmailMessage(
+                id: "mock-id-2",
+                threadId: "thread-2",
+                subject: "Your weekly summary",
+                from: "Reports <reports@example.com>",
+                fromEmail: "reports@example.com",
+                snippet: "Here’s what happened this week in your projects. You closed 12 tasks and replied to 34 emails.",
+                messageIdHeader: "<mock-message-2@aireply.local>",
+                internalDate: Date().addingTimeInterval(-86400 * 2),
+                isUnread: false,
+                bodyHtml: nil,
+                bodyPlain: "Weekly summary content for preview purposes."
+            ),
+            GmailMessage(
+                id: "mock-id-3",
+                threadId: "thread-3",
+                subject: "Flight booking confirmation",
+                from: "Airline <no-reply@airline.com>",
+                fromEmail: "no-reply@airline.com",
+                snippet: "Your trip to San Francisco is confirmed. Tap to see your itinerary and boarding details.",
+                messageIdHeader: "<mock-message-3@aireply.local>",
+                internalDate: Date().addingTimeInterval(-86400 * 7),
+                isUnread: false,
+                bodyHtml: nil,
+                bodyPlain: "Flight details for your upcoming trip (preview only)."
+            )
+        ]
+    }
+
+    /// A small thread of messages for previewing the conversation view.
+    static var mockThread: [GmailMessage] {
+        [
+            GmailMessage(
+                id: "mock-thread-id-1",
+                threadId: "thread-42",
+                subject: "Project kickoff details",
+                from: "Client <client@example.com>",
+                fromEmail: "client@example.com",
+                snippet: "Looking forward to getting started. Here are a few agenda items for our kickoff call…",
+                messageIdHeader: "<mock-thread-message-1@aireply.local>",
+                internalDate: Date().addingTimeInterval(-86400 * 3),
+                isUnread: false,
+                bodyHtml: nil,
+                bodyPlain: """
+                Hi,
+
+                Excited to get started on this project. For our kickoff call, let’s cover:
+                - Scope & goals
+                - Timeline
+                - Communication channels
+
+                Talk soon!
+                """
+            ),
+            GmailMessage(
+                id: "mock-thread-id-2",
+                threadId: "thread-42",
+                subject: "Re: Project kickoff details",
+                from: "You <you@example.com>",
+                fromEmail: "you@example.com",
+                snippet: "Thanks for the details. I’ve added a few notes and will share a draft timeline shortly.",
+                messageIdHeader: "<mock-thread-message-2@aireply.local>",
+                internalDate: Date().addingTimeInterval(-86400 * 2),
+                isUnread: false,
+                bodyHtml: nil,
+                bodyPlain: """
+                Thanks for the outline!
+
+                I’ll prepare a draft timeline and share it ahead of the meeting so we can review together.
+
+                Best,
+                You
+                """
+            )
+        ]
     }
 }
