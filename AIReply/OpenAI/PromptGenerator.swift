@@ -68,18 +68,14 @@ class PromptGenerator {
         
         You are an expert professional email response assistant.
 
-        Your task is to generate high-quality, context-aware email summary.
-
-
-
+        Your task is to generate a high-quality, concise summary of an email or a full email conversation/thread.
 
         ────────────────────────
-        EMAIL CONTENT:
+        CONVERSATION / EMAIL CONTENT (messages in chronological order):
         {{\(emailContent))}}
         
-        The email content is provided above you need to write a summary for that.
-        NOTE : The summary must be shorter and concise then the orignal email length.
-        The output must be a structured JSON format as following:
+        Summarise the content above. If there are multiple messages, summarise the whole conversation in order; otherwise summarise the single email.
+        The summary must be shorter and more concise than the original. Output must be a structured JSON format as follows:
         
         '''json
         {

@@ -97,7 +97,6 @@ extension ReplyBottomSheet{
             })
             .disabled(notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isGenerating)
 
-            Spacer()
         }
     }
 

@@ -2,10 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>We use speech recognition to convert your voice instructions into text for email replies.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We need microphone access for voice prompting.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.aireply.inboxrefresh</string>
@@ -33,5 +31,10 @@
 	<array>
 		<string>fetch</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>launchImage</string>
+	</dict>
 </dict>
 </plist>

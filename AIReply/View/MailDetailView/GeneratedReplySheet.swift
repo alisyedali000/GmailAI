@@ -12,12 +12,18 @@ struct GeneratedReplySheet: View {
 
     let message: GmailMessage
     @State var replyContent: String
-    @State private var currentIndex: Int = 0
+    @State private var selectedStyle: ReplyStyle = .concise
     @State private var isSending = false
     @State private var sendSuccess = false
 
     private var replies: [Email] {
         Array(vm.generatedEmails.emails.prefix(3))
+    }
+
+    private var currentReplyContent: String {
+        let index = selectedStyle.rawValue
+        guard index < replies.count else { return replyContent }
+        return replies[index].content
     }
 
     var body: some View {
@@ -32,6 +38,26 @@ struct GeneratedReplySheet: View {
                     }
                 }
             }
+            .onChange(of: selectedStyle) { _, _ in
+                replyContent = currentReplyContent
+            }
+            .onAppear {
+                replyContent = currentReplyContent
+            }
+    }
+}
+
+private enum ReplyStyle: Int, CaseIterable {
+    case concise = 0
+    case balanced = 1
+    case detailed = 2
+
+    var title: String {
+        switch self {
+        case .concise: return "Concise"
+        case .balanced: return "Balanced"
+        case .detailed: return "Detailed"
+        }
     }
 }
 
@@ -40,24 +66,12 @@ extension GeneratedReplySheet {
     var screenView: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
-                HStack {
-
-                    Spacer()
-                if replies.count > 1 {
-                    Button {
-                        shuffleReply()
-                    }label:{
-      
-                        Image(systemName: "shuffle")
-                            .renderingMode(.template)
-                            .scaleEffect(1.25)
-                            .foregroundStyle(Color.appPrimary)
-                        
+                Picker("Reply style", selection: $selectedStyle) {
+                    ForEach(ReplyStyle.allCases, id: \.rawValue) { style in
+                        Text(style.title).tag(style)
                     }
                 }
-//                        .buttonStyle(.borderless)
-                    }
-                
+                .pickerStyle(.segmented)
 
                 SelfSizingTextEditor(
                     text: $replyContent,
@@ -69,24 +83,8 @@ extension GeneratedReplySheet {
                 .cornerRadius(8)
             }
 
-//            Button {
-//                Task { await sendReply() }
-//            } label: {
-//                HStack {
-//                    if isSending {
-//                        Spinner()
-//                    }
-//                    Text("Send Reply")
-//                }
-//                .frame(maxWidth: .infinity)
-//                .frame(height: 44)
-//                .background(Color.blue)
-//                .foregroundColor(.white)
-//                .cornerRadius(8)
-//            }
-            
             AppButton(title: "Send", action: {
-                Task{
+                Task {
                     await sendReply()
                 }
             })
@@ -111,13 +109,6 @@ extension GeneratedReplySheet {
                 dismiss()
             }
         }
-    }
-
-    private func shuffleReply() {
-        guard !replies.isEmpty else { return }
-        let count = replies.count
-        currentIndex = (currentIndex + 1) % count // 0 -> 1 -> 2 -> 0 ...
-        replyContent = replies[currentIndex].content
     }
 }
 

@@ -27,7 +27,7 @@ extension AppButton{
             }label:{
                
                 RoundedRectangle(cornerRadius: 16)
-                    .foregroundStyle(color ?? ( colorScheme == .dark ? .white : Color(hex: "#2B7FFF")))
+                    .foregroundStyle(color ?? ( colorScheme == .dark ? .white : Color.appPrimary))
                     .frame(height: 56)
                     .overlay {
                         Text(title)

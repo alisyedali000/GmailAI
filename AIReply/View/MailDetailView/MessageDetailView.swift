@@ -20,6 +20,8 @@ struct MessageDetailView: View {
     @State private var showGeneratedReplySheet = false
     @State private var generatedReplyText = ""
     @State private var htmlHeights: [String: CGFloat] = [:]
+    /// When non-nil, reply sheet uses this message (e.g. from per-message reply icon). When nil, big Reply uses the thread's main message.
+    @State private var replyTargetMessage: GmailMessage?
     
     private var dateFormatter: DateFormatter {
         let f = DateFormatter()
@@ -33,7 +35,7 @@ struct MessageDetailView: View {
             .padding(.horizontal)
         .sheet(isPresented: $showReplySheet) {
             NavigationStack {
-                ReplyBottomSheet(gmail: gmail, message: message, vm: vm) { replyText in
+                ReplyBottomSheet(gmail: gmail, message: replyTargetMessage ?? message, vm: vm) { replyText in
                     generatedReplyText = replyText
                     showReplySheet = false
                     showGeneratedReplySheet = true
@@ -51,7 +53,8 @@ struct MessageDetailView: View {
         .toolbarRole(.editor)
         .task {
             await loadThread()
-            vm.email = message.bodyPlain ?? message.snippet
+            let combinedContent = combinedThreadContent(threadMessages)
+            vm.email = combinedContent
             await vm.generateEmailSummary {
                 summaryText = vm.emailSummary.content
             }
@@ -70,7 +73,7 @@ extension MessageDetailView{
 //                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 //                    .padding()
 //            } else {
-                ScrollView {
+            ScrollView(showsIndicators: false){
                     VStack(alignment: .leading){
                         Text(message.subject)
                             .font(.semiBold(size: 17))
@@ -90,6 +93,7 @@ extension MessageDetailView{
 
             
             AppButton(title: "Reply") {
+                replyTargetMessage = nil
                 showReplySheet = true
             }
 
@@ -103,31 +107,34 @@ extension MessageDetailView{
             
             
         
-            HStack(alignment: .top){
+            HStack(alignment: .top) {
                 SenderAvatarView(gmail: gmail, email: msg.fromEmail, displayName: msg.from, size: 44)
-                VStack(alignment: .leading){
-                    
-                    
+                VStack(alignment: .leading) {
                     Text(msg.from)
                         .font(.semiBold(size: 13.5))
-                    
                     Text(msg.fromEmail)
                         .font(.regular(size: 12.5))
-                    
                     if let date = msg.internalDate {
                         Text(dateFormatter.string(from: date))
                             .font(.regular(size: 11))
                             .foregroundColor(.secondary)
                             .padding(.top, 3)
                     }
-                    
                 }
-                
-
-                
-        
-                
-                
+                Spacer(minLength: 8)
+                Button {
+                    replyTargetMessage = msg
+                    showReplySheet = true
+                } label: {
+                    Image(.replyIcon)
+                        .renderingMode(.template)
+                        .rotationEffect(Angle(degrees: 90))
+                        .font(.system(size: 16))
+                        .foregroundColor(Color.appPrimary)
+                        .padding(.horizontal)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Reply to this message")
             }
 
             if isFirst{
@@ -231,6 +238,19 @@ extension MessageDetailView{
             threadMessages = [message]
         }
 //        isLoadingThread = false
+    }
+
+    /// Builds a single string of the full conversation for summary/context (oldest to newest).
+    private func combinedThreadContent(_ messages: [GmailMessage]) -> String {
+        guard !messages.isEmpty else { return message.bodyPlain ?? message.snippet }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return messages.enumerated().map { index, msg in
+            let dateStr = msg.internalDate.map { formatter.string(from: $0) } ?? ""
+            let body = msg.bodyPlain ?? msg.snippet
+            return "--- Message \(index + 1) ---\nFrom: \(msg.from)\nDate: \(dateStr)\n\n\(body)"
+        }.joined(separator: "\n\n")
     }
 }
 #Preview {

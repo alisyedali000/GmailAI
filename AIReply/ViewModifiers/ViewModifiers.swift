@@ -36,7 +36,7 @@ extension View {
     func loaderOverlay(visible: Bool, message: String = "Loading…") -> some View {
         overlay {
             if visible {
-                ProgressView(message)
+                Spinner()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color(UIColor.systemBackground).opacity(0.8))
             }
